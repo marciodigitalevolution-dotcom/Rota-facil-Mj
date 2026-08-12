@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Rota Márcio — MJ Company</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
+:root {
+  --bg:#f5f6fa;--white:#fff;--border:#e3e6f0;--text:#1c2035;--muted:#7c829a;
+  --q1:#2563eb;--q1l:#eff4ff;--q1m:#bfcfff;
+  --q2:#16a34a;--q2l:#f0fdf4;--q2m:#bbf7d0;
+  --or:#d97706;--orl:#fffbeb;--re:#dc2626;--rel:#fef2f2;
+  --sh:0 1px 4px rgba(0,0,0,.07);--shm:0 4px 16px rgba(0,0,0,.10);
+  --r:13px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+
+.app-header{background:var(--text);color:#fff;padding:16px 16px 12px;position:sticky;top:0;z-index:200;box-shadow:var(--shm)}
+.app-header-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.app-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.3px}
+.app-logo span{color:#60a5fa}
+.app-vendedor{font-size:12px;color:rgba(255,255,255,.55);margin-left:auto}
+.app-stats{display:flex;gap:6px;flex-wrap:wrap}
+.app-stat{background:rgba(255,255,255,.08);border-radius:6px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.7)}
+.app-stat b{color:#fff;font-weight:700}
+
+.search-bar{padding:10px 16px;background:#fff;border-bottom:1px solid var(--border)}
+.search-input{width:100%;padding:9px 12px 9px 34px;border:1.5px solid var(--border);border-radius:9px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%237c829a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 11px center;outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--q1);background-color:#fff}
+
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:1;min-width:120px;padding:11px 10px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .2s}
+.tab-btn.q1a{color:var(--q1);border-bottom-color:var(--q1)}
+.tab-btn.q2a{color:var(--q2);border-bottom-color:var(--q2)}
+
+.pbanner{margin:12px 16px 0;padding:12px 14px;border-radius:var(--r);display:flex;align-items:center;gap:12px}
+.b1{background:var(--q1l);border:1px solid var(--q1m)}
+.b2{background:var(--q2l);border:1px solid var(--q2m)}
+.blabel{font-size:12px;font-weight:700;flex:1}
+.b1 .blabel{color:var(--q1)}.b2 .blabel{color:var(--q2)}
+.bcount{font-size:22px;font-weight:800;font-family:'Syne',sans-serif}
+.b1 .bcount{color:var(--q1)}.b2 .bcount{color:var(--q2)}
+.bbar{flex:2;height:6px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden}
+.bfill{height:100%;border-radius:3px;transition:width .5s}
+.b1 .bfill{background:var(--q1)}.b2 .bfill{background:var(--q2)}
+.bpct{font-size:10px;margin-top:3px;text-align:right}
+.b1 .bpct{color:#5b7fcb}.b2 .bpct{color:#4a9a68}
+
+.content{padding:12px 16px 80px}
+.q-panel{display:none}.q-panel.active{display:block}
+
+.semana-sep{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:14px 2px 6px}
+
+.dia-card{background:#fff;border-radius:var(--r);border:1px solid var(--border);margin-bottom:8px;overflow:hidden;box-shadow:var(--sh)}
+.dia-head{display:flex;align-items:center;gap:10px;padding:11px 13px;cursor:pointer;transition:background .15s;user-select:none}
+.dia-head:hover{background:var(--bg)}
+.dia-num{width:34px;height:34px;border-radius:9px;font-size:12px;font-weight:800;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.q1c .dia-num{background:var(--q1l);color:var(--q1)}
+.q2c .dia-num{background:var(--q2l);color:var(--q2)}
+.dia-info{flex:1;min-width:0}
+.dia-title{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dia-region{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dia-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.dia-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px}
+.q1c .dia-badge{background:var(--q1l);color:var(--q1)}
+.q2c .dia-badge{background:var(--q2l);color:var(--q2)}
+.dia-done{font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;background:#dcfce7;color:#16a34a;display:none}
+.dia-done.show{display:inline}
+.dia-chev{font-size:10px;color:var(--muted);transition:transform .2s}
+.dia-card.open .dia-chev{transform:rotate(180deg)}
+.dia-prog{height:3px;background:var(--border)}
+.dia-prog-fill{height:100%;transition:width .4s}
+.q1c .dia-prog-fill{background:var(--q1)}.q2c .dia-prog-fill{background:var(--q2)}
+
+.lojas-wrap{display:none}
+.dia-card.open .lojas-wrap{display:block}
+
+.loja-item{display:flex;align-items:flex-start;gap:9px;padding:10px 13px;border-top:1px solid var(--border);transition:background .12s}
+.loja-item:hover{background:#fafbff}
+.loja-item.done{opacity:.45}
+.loja-item.done .loja-nome{text-decoration:line-through}
+.loja-check{width:20px;height:20px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;font-size:11px;background:#fff;transition:all .15s}
+.loja-item.done .loja-check{background:var(--q2);border-color:var(--q2);color:#fff}
+.loja-body{flex:1;min-width:0}
+.loja-nome{font-weight:600;font-size:12.5px;line-height:1.3}
+.loja-end{font-size:11.5px;color:var(--muted);margin-top:3px}
+.loja-bairro{font-size:10.5px;color:var(--muted);margin-top:1px;font-style:italic}
+.loja-obs-tag{display:inline-block;margin-top:4px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:var(--orl);color:var(--or)}
+.warn-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;background:var(--rel);color:var(--re);margin-left:4px}
+.loja-actions{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.loja-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
+.sp{background:var(--q1l);color:var(--q1)}.sv{background:var(--q2l);color:var(--q2)}
+.nav-row{display:flex;gap:4px}
+.btn-nav{display:flex;align-items:center;gap:3px;padding:5px 8px;border-radius:7px;font-size:11px;font-weight:600;text-decoration:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;transition:opacity .15s}
+.btn-nav:hover{opacity:.75}
+.bw{background:#e0f2fe;color:#0369a1}.bg{background:#fee2e2;color:#b91c1c}
+.btn-obs-sm{font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;padding:1px 0}
+
+/* Nota de repetição */
+.repeat-note{margin:8px 16px;padding:10px 14px;background:#fefce8;border:1px solid #fde68a;border-radius:var(--rs);font-size:12px;color:#92400e;display:flex;align-items:center;gap:8px}
+
+.fab{position:fixed;bottom:20px;right:18px;width:50px;height:50px;border-radius:14px;background:var(--text);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;box-shadow:var(--shm);z-index:150;transition:transform .2s}
+.fab:hover{transform:scale(1.08)}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;align-items:flex-end}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:22px 22px 0 0;padding:22px 18px 36px;width:100%;max-height:88vh;overflow-y:auto}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:16px}
+.mf{margin-bottom:12px}
+.mf label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.mf input,.mf select,.mf textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);background:#fff;outline:none;transition:border-color .2s}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--q1)}
+.mf textarea{resize:vertical;min-height:60px}
+.modal-btns{display:flex;gap:8px;margin-top:6px}
+.btn-cancel{flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--text)}
+.btn-save{flex:2;padding:12px;background:var(--text);border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:#fff}
+
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--text);color:#fff;padding:9px 16px;border-radius:20px;font-size:12px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:500;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-header-row">
+    <div class="app-logo">Rota<span>Fácil</span></div>
+    <div class="app-vendedor">Márcio · Vendedor MJ</div>
+  </div>
+  <div class="app-stats">
+    <div class="app-stat">📦 Total <b>211</b></div>
+    <div class="app-stat">🔄 <b>2x</b> por mês</div>
+    <div class="app-stat">📅 <b>15</b> dias por ciclo</div>
+    <div class="app-stat">📍 ~<b>14</b> por dia</div>
+    <div class="app-stat">✅ Visitados: <b id="total-vis">0</b></div>
+  </div>
+</div>
+
+<div class="search-bar">
+  <input class="search-input" type="text" placeholder="Buscar cliente, bairro ou endereço…" oninput="buscar(this.value)">
+</div>
+
+<div class="tabs">
+  <button class="tab-btn q1a" id="tab-q1" onclick="trocarQ(0)">🔵 1ª Quinzena · Dias 1–15</button>
+  <button class="tab-btn" id="tab-q2" onclick="trocarQ(1)">🟢 2ª Quinzena · Repete</button>
+</div>
+
+<div class="content" id="content">
+  <div class="q-panel active" id="qp-0">
+    <div class="pbanner b1">
+      <div><div class="blabel">🔵 1ª Quinzena</div><div style="font-size:11px;color:#5b7fcb;margin-top:2px">Dias 1 a 15 · Centro SP → Guarulhos</div></div>
+      <div class="bcount" id="vis-q1">0/211</div>
+      <div style="flex:1"><div class="bbar"><div class="bfill" id="bar-q1" style="width:0%"></div></div><div class="bpct" id="pct-q1">0% concluído</div></div>
+    </div>
+    <div id="dias-q1"></div>
+  </div>
+
+  <div class="q-panel" id="qp-1">
+    <div class="pbanner b2">
+      <div><div class="blabel">🟢 2ª Quinzena</div><div style="font-size:11px;color:#4a9a68;margin-top:2px">Mesmos 211 clientes · 2ª visita do mês</div></div>
+      <div class="bcount" id="vis-q2">0/211</div>
+      <div style="flex:1"><div class="bbar"><div class="bfill" id="bar-q2" style="width:0%"></div></div><div class="bpct" id="pct-q2">0% concluído</div></div>
+    </div>
+    <div class="repeat-note">🔄 <span>Mesma rota da 1ª quinzena — marque separadamente sua 2ª visita em cada cliente.</span></div>
+    <div id="dias-q2"></div>
+  </div>
+</div>
+
+<button class="fab" onclick="abrirModal()" title="Adicionar cliente">＋</button>
+
+<div class="overlay" id="overlay" onclick="fecharModal(event)">
+  <div class="modal">
+    <div class="modal-title">➕ Adicionar cliente</div>
+    <div class="mf"><label>Nome / Razão Social</label><input id="a-nome" placeholder="Ex: Supermercado Silva"></div>
+    <div class="mf"><label>Endereço</label><input id="a-end" placeholder="Ex: Rua das Flores, 123"></div>
+    <div class="mf"><label>Bairro</label><input id="a-bairro" placeholder="Ex: Santana"></div>
+    <div class="mf"><label>Observação</label><textarea id="a-obs" placeholder="Horário, responsável…"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-save" onclick="salvar()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DIAS = [
+  {num:1,sem:1,titulo:"Centro / Luz / Bom Retiro",reg:"CEP 010xx–013xx",lojas:[
+    {id:"l1",n:"JM Comércio Varejista",e:"Rua Florêncio de Abreu, 8550",b:"Centro"},
+    {id:"l2",n:"Ana Paula dos Santos Minimercado",e:"Rua S. Caetano, 638",b:"Luz"},
+    {id:"l3",n:"Mercadinho Dao LTDA",e:"Rua S. Caetano, 674",b:"Luz"},
+    {id:"l4",n:"Minimercado da Amizade",e:"Rua Dom Antonio de Melo, 160",b:"Luz"},
+    {id:"l5",n:"Casa de Carnes Nova Estação Armênia",e:"R. Paulino Guimarães, 22",b:"Luz"},
+    {id:"l6",n:"Agraete Carolina da Silva Moreira",e:"Rua Barra do Tibají, 594",b:"Bom Retiro"},
+    {id:"l7",n:"Bom da Barra Mercadinho",e:"R. Barra do Tibají, 444",b:"Bom Retiro"},
+    {id:"l8",n:"Seu Mart Mercados LTDA",e:"Rua dos Italianos, 950",b:"Bom Retiro"},
+    {id:"l9",n:"Express Rudge 2 Comércio de Alimentos",e:"Rua do Bosque, 386",b:"Barra Funda"},
+    {id:"l10",n:"Sonia Juana Quispe de Gutierrez",e:"Rua Cruzeiro, 534",b:"Barra Funda"},
+    {id:"l11",n:"Mercado Alimix LTDA",e:"Rua Lopes de Oliveira, 186",b:"Barra Funda"},
+    {id:"l12",n:"A Lareira Restaurante e Paes (Perdizes)",e:"Av. Sumaré, 488",b:"Perdizes"},
+    {id:"l13",n:"Mercadinho Vila Romana",e:"Rua Camburuí, 105",b:"Vila Ipojuca"},
+    {id:"l14",n:"Mercado Eden LTDA",e:"Rua Salete, 251",b:"Santana"},
+    {id:"l15",n:"Chuanyong Lin Mercadinho",e:"Rua Alfredo Pujol, 910",b:"Santana"},
+  ]},
+  {num:2,sem:1,titulo:"Santana / Carandiru / Mandaqui",reg:"CEP 020xx–024xx",lojas:[
+    {id:"l16",n:"Gran D Ouro Ind e Com de Alimentos",e:"Av. Braz Leme, 2341",b:"Santana"},
+    {id:"l17",n:"Pingstone Group LTDA",e:"Av. Gal. Ataliba Leonel, 2276",b:"Carandiru"},
+    {id:"l18",n:"Mercadinho Família LC",e:"Rua Ezequiel Freire, 286",b:"Santana"},
+    {id:"l19",n:"Panificadora e Confeitaria Condessa",e:"Rua Conselheiro Saraiva, 696",b:"Santana"},
+    {id:"l20",n:"Yinxiong Chen Minimercado",e:"R. Conselheiro Saraiva, 804",b:"Santana"},
+    {id:"l21",n:"Red White Carnes Nobres e Rotisseria",e:"Rua Francisca Julia, 222",b:"Santana"},
+    {id:"l22",n:"Mercado Jing LTDA",e:"Rua Francisca Julia, 302",b:"Santana"},
+    {id:"l23",n:"Minisol Mercado LTDA",e:"Av. Sta Inês, 1165",b:"Parque Mandaqui"},
+    {id:"l24",n:"RM Hortifruti LTDA",e:"Rua Dep. Gouvêa Franco, 3",b:"Parque Mandaqui"},
+    {id:"l25",n:"Supermercado Família Z",e:"R. Salvador Tolezano, 65",b:"Parque Mandaqui"},
+    {id:"l26",n:"Restaurante e Pizzaria Albufeira",e:"R. Salvador Tolezano, 817",b:"Parque Mandaqui"},
+    {id:"l27",n:"Heping Jiang",e:"Av. Conselheiro Moreira de Barros, 1414",b:"Lauzane Paulista"},
+    {id:"l28",n:"Panificadora Taba LTDA",e:"R. Conselheiro Moreira de Barros, 2850",b:"Lauzane Paulista"},
+    {id:"l29",n:"Mercado WC LTDA",e:"R. Cons. Moreira de Barros, 3882",b:"Lauzane Paulista"},
+  ]},
+  {num:3,sem:1,titulo:"Lauzane Paulista / Santa Teresinha / Imirim",reg:"CEP 244xx–247xx",lojas:[
+    {id:"l30",n:"Guaca Hortifruti LTDA",e:"Av. do Guacá, 140",b:"Lauzane Paulista"},
+    {id:"l31",n:"Lucky Mercado LTDA",e:"Av. do Guacá, 585",b:"Lauzane Paulista"},
+    {id:"l32",n:"Spinola Supermercado LTDA",e:"Av. Ultramarino, 318",b:"Lauzane Paulista"},
+    {id:"l33",n:"Nova Copacabana Padaria e Confeitaria",e:"Alameda Afonso Schmidt, 619",b:"Santa Teresinha"},
+    {id:"l34",n:"Dedo de Moça Empório LTDA",e:"Alameda Afonso Schmidt, 652",b:"Santa Teresinha"},
+    {id:"l35",n:"Mercearia Mega Mais LTDA",e:"Rua Francisca Biriba, 405",b:"Santa Teresinha"},
+    {id:"l36",n:"Panificadora Docinho LTDA",e:"Rua Francisca Biriba, 743",b:"Santa Teresinha"},
+    {id:"l37",n:"Paes e Doces Itaicy LTDA",e:"Rua Itaici, 186",b:"Santa Teresinha"},
+    {id:"l38",n:"Confeitaria Saint Tropez LTDA",e:"R. Piracema, 211",b:"Santa Teresinha"},
+    {id:"l39",n:"Mercado e Hortifruti Copacabana",e:"R. Copacabana, 480",b:"Santa Teresinha"},
+    {id:"l40",n:"Tesco Com de Produtos Alimentícios",e:"Rua Nova dos Portugueses, 887",b:"Chora Menino"},
+    {id:"l41",n:"Mercado Conexão Imirim",e:"Av. Imirim, 1415",b:"Imirim"},
+    {id:"l42",n:"MTV Comércio Varejista",e:"Rua Amaro Alves Tenório, 85",b:"Jardim Virgínia"},
+    {id:"l43",n:"Mercado Xian Zhang LTDA",e:"R. João Roque, 52",b:"Imirim"},
+  ]},
+  {num:4,sem:1,titulo:"Casa Verde / Parque Peruche / Sítio do Mandaqui",reg:"CEP 251xx–254xx",lojas:[
+    {id:"l44",n:"Panif Confeit Reims LT",e:"Rua Dr. Ribas Botelho, 46",b:"Jardim das Laranjeiras"},
+    {id:"l45",n:"Gold Prime Supermercado",e:"Av. Casa Verde, 360",b:"Casa Verde"},
+    {id:"l46",n:"Good Lucky Mercearia",e:"Av. Baruel, 271",b:"Vila Baruel"},
+    {id:"l47",n:"D S Avila Hortifruti",e:"Av. Baruel, 33",b:"Vila Baruel"},
+    {id:"l48",n:"E & R Imirim Mercearia e Padaria",e:"R. Artur de Oliveira, 318",b:"Parque Peruche"},
+    {id:"l49",n:"Roberto Massaharu Yonamine",e:"Rua Francisco Diogo, 401",b:"Parque Peruche"},
+    {id:"l50",n:"Mercado New Alpes da Cantareira",e:"Rua Epaminondas Melo do Amaral, 467",b:"Sítio do Mandaqui"},
+    {id:"l51",n:"Super Fit Mercado LTDA",e:"Rua Abura, 14",b:"Sítio do Mandaqui"},
+    {id:"l52",n:"Novo Mix Casa Verde LTDA",e:"R. Zilda, 533",b:"Casa Verde Alta"},
+    {id:"l53",n:"Jacapão Paes e Doces LTDA",e:"Av. Jaçanã, 703",b:"Jaçanã"},
+    {id:"l54",n:"Guapira Paes e Doces LTDA",e:"Av. Guapira, 2300",b:"Tucuruvi"},
+    {id:"l55",n:"Doceria Multi Sabores LTDA",e:"Av. Tucuruvi, 551",b:"Tucuruvi"},
+    {id:"l56",n:"Padaria e Conf. Palmas do Tremembé",e:"Av. Cel. Sezefredo Fagundes, 1823",b:"Tucuruvi"},
+    {id:"l57",n:"Mercanorte Minimercado",e:"Av. Cel. Sezefredo Fagund, 1562",b:"Tucuruvi"},
+  ]},
+  {num:5,sem:2,titulo:"Tucuruvi / Água Fria / Vila Mazzei / Sítio do Piqueri",reg:"CEP 226xx–232xx",lojas:[
+    {id:"l58",n:"Arizona Paes e Doces",e:"Av. Nova Cantareira, 3254",b:"Tucuruvi"},
+    {id:"l59",n:"Açougue Bole Bole II LTDA",e:"Av. Água Fria, 816",b:"Água Fria"},
+    {id:"l60",n:"Supermercado Mini Sol LTDA",e:"Av. Mazzei, 1209",b:"Vila Mazzei"},
+    {id:"l61",n:"Avícola e Merc Porto Ferreira",e:"Rua Imbiras, 843",b:"Vila Nova Mazzei"},
+    {id:"l62",n:"Rede Supermercados Confiança (SP)",e:"Av. Antonelo da Messina, 1526",b:"Sítio do Piqueri"},
+    {id:"l63",n:"Mercado Barreiro Azul LTDA",e:"Rua Manuel Vieira da Luz, 489",b:"Sítio do Piqueri"},
+    {id:"l64",n:"Avícola e Mercearia Nakaza",e:"Rua do Ushikichi Kamiya, 250",b:"Parque Casa de Pedra"},
+    {id:"l65",n:"Mercado e Padaria Figueiredo",e:"TV Igarapé Primavera, 3",b:"Jardim Filhos da Terra"},
+    {id:"l66",n:"Kelvin Moura Peres Silva Supermercado",e:"Rua Arley Gilberto de Araújo, 36",b:"Jardim Felicidade ZN"},
+    {id:"l67",n:"Marcos Roberto Souza Costa Mercado",e:"Rua dos Pinheiros, 33",b:"Jardim Felicidade ZN"},
+    {id:"l68",n:"Mercado SH Comércio de Mercadorias",e:"Rua Onídio Barbosa de Souza, 33",b:"Jardim Felicidade ZN"},
+    {id:"l69",n:"Ricardo Gonçalves Lima",e:"Rua da Fonte, 48",b:"Jardim Portal I e II"},
+    {id:"l70",n:"RBS Supermercado Santa Maria",e:"Rua Dez, 91",b:"Jardim Palmares"},
+    {id:"l71",n:"Joyce Alves de Souza Lima",e:"Travessa Palmares do Norte, 65",b:"Jardim Palmares ZN"},
+  ]},
+  {num:6,sem:2,titulo:"Vila Albertina / Tremembé / Jd. Santo Alberto / Fontalis",reg:"CEP 235xx–237xx",lojas:[
+    {id:"l72",n:"McGrow Supermercado LTDA",e:"Rua Maria Amália Lopes Azevedo, 74",b:"Vila Albertina"},
+    {id:"l73",n:"Anderson Olival Mercearia",e:"Rua Maria Amália Lopes Azevedo, 3371",b:"Vila Albertina"},
+    {id:"l74",n:"Empório Boa Vista LTDA",e:"Rua Vieira de Melo, 670",b:"Jardim Virgínia Bianca"},
+    {id:"l75",n:"Fang Han",e:"Av. Sen. José Ermírio de Moraes, 735",b:"Tremembé"},
+    {id:"l76",n:"Mercadinho Albertina LTDA",e:"R. Bernardo Fonseca Lobo, 444",b:"Jardim Santo Alberto"},
+    {id:"l77",n:"Mercado Solução da Vila LTDA",e:"Rua Bernardo Fonseca Lobo, 459",b:"Jardim Santo Alberto"},
+    {id:"l78",n:"Mercado MM Martins LTDA",e:"Rua Augusto Rodrigues, 964",b:"Jardim Fontalis"},
+    {id:"l79",n:"Mercado Amigo Barateiro",e:"Rua Santo Anselmo de Cantuária, 32",b:"Jardim Campo Limpo ZN"},
+    {id:"l80",n:"João Antonio da Silva Filho",e:"Rua Nossa Senhora Aparecida, 23",b:"Jardim Denise"},
+    {id:"l81",n:"Talita Franciele Neves de Carvalho",e:"Rua Nossa Senhora Aparecida, 52",b:"Jardim Denise"},
+    {id:"l82",n:"Dina Souza Santos",e:"Rua Bom Jesus Cantareira, 09",b:"Jardim Denise"},
+    {id:"l83",n:"J V de Almeida Silva",e:"R. Antonio João, 402",b:"Sítio do Morro"},
+    {id:"l84",n:"Marinez Sandra de Souza",e:"Rua Baltasar Abadal, 143",b:"Vila Santista"},
+    {id:"l85",n:"Dona Oferta Comércio de Alimentos",e:"Av. Parada Pinto, 1164",b:"Vila Nova Cachoeirinha"},
+  ]},
+  {num:7,sem:2,titulo:"Cachoeirinha / Limão / Palmeiras / Vila Guilherme / Vila Maria",reg:"CEP 261xx–211xx",lojas:[
+    {id:"l86",n:"Chen Mercado LTDA",e:"Av. Parada Pinto, 781",b:"Vila Nova Cachoeirinha"},
+    {id:"l87",n:"Paes e Doces Sabor de Mel",e:"Av. Inajar de Souza, 2752",b:"Limão"},
+    {id:"l88",n:"A Lareira Restaurante e Paes (Limão)",e:"Av. Dep. Emílio Carlos, 718",b:"Limão"},
+    {id:"l89",n:"Açougue e Mercearia Avenida",e:"Av. Antonio Munhoz Bonilha, 950",b:"Vila Palmeiras"},
+    {id:"l90",n:"Supermercado e Atacado Ideal Mix",e:"Est. Lázaro Amâncio de Barros, 1131",b:"Vila Itaberaba"},
+    {id:"l91",n:"Empório e Rotisserie Sophie LTDA",e:"Rua Antonio Pontes, 244",b:"Vila Guilherme"},
+    {id:"l92",n:"Naka Supermercado LTDA",e:"Travessa Leandro Ferreira, 76",b:"Vila Guilherme"},
+    {id:"l93",n:"Ning Wu Mercado",e:"Rua Maria Cândida, 835",b:"Vila Guilherme"},
+    {id:"l94",n:"Hortifrutti Juvita LTDA",e:"R. Salvador Romeu, 479",b:"Vila Isolina Mazzei"},
+    {id:"l95",n:"Supermercado Santa Maria LTDA",e:"Av. Guilherme Cotching, 1312",b:"Vila Maria"},
+    {id:"l96",n:"Comercial Sakagawa LTDA",e:"Rua Amambai, 1215",b:"Vila Maria"},
+    {id:"l97",n:"Panificadora Nova Santo Antonio",e:"Praça Cosmorama, 2",b:"Vila Maria Alta"},
+    {id:"l98",n:"Carinhoso Supermercado LTDA",e:"PC Rio Brilhante, 111",b:"Vila Maria Alta"},
+    {id:"l99",n:"Hokim Supermercado LTDA",e:"Av. Conceição, 4603",b:"Jardim Japão"},
+  ]},
+  {num:8,sem:3,titulo:"Jardim Japão / Parque Novo Mundo / Vila Gustavo / Vila Medeiros",reg:"CEP 213xx–222xx",lojas:[
+    {id:"l100",n:"Grano Rotisserie LTDA",e:"Av. João Simão de Castro, 73",b:"Vila Sabrina"},
+    {id:"l101",n:"Padaria e Conf. Nova Jardim Brasil",e:"Av. Jardim Japão, 406",b:"Jardim Brasil"},
+    {id:"l102",n:"Rede Supermercados Confiança (PNM)",e:"Alameda Ssarg Assad Feres, 35",b:"Parque Novo Mundo"},
+    {id:"l103",n:"RS Avila Hortifruti LTDA",e:"Av. Serafim Gonçalves Pereira, 621",b:"Parque Novo Mundo"},
+    {id:"l104",n:"Calisto Comercial Atacadista de Bebidas",e:"Rua Cabo Romeu Casagrande, 451",b:"Parque Novo Mundo"},
+    {id:"l105",n:"Panetteria Delícias do Parque",e:"Av. José Maria Fernandes, 610",b:"Parque Novo Mundo"},
+    {id:"l106",n:"Mercadinho da Geni LTDA",e:"Av. Júlio Buono, 421",b:"Vila Gustavo"},
+    {id:"l107",n:"Lukas Supermercado LTDA",e:"Rua Sílvio Lazzari, 31",b:"Vila Gustavo"},
+    {id:"l108",n:"Minimercado Empório Buono",e:"Av. Júlio Buono, 2561",b:"Vila Constança"},
+    {id:"l109",n:"Yutaka Comercial LTDA",e:"Av. Ede, 230",b:"Vila Ede"},
+    {id:"l110",n:"Supermercado Aliança LTDA",e:"Rua José de Almeida, 801",b:"Vila Medeiros"},
+    {id:"l111",n:"Padaria e Confeit. Nova Prime",e:"Rua Geolandia, 1362",b:"Vila Medeiros"},
+    {id:"l112",n:"Mercearia e Avícola Ditiam",e:"Rua Geolandia, 1301",b:"Vila Medeiros"},
+    {id:"l113",n:"Mercadinho Super Gula LTDA",e:"Rua Itamonte, 724",b:"Vila Medeiros"},
+  ]},
+  {num:9,sem:3,titulo:"Jardim Brasil ZN / Parada Inglesa / Vila Dom Pedro II",reg:"CEP 222xx–225xx",lojas:[
+    {id:"l114",n:"Mercado Rodrigues LTDA",e:"Rua Basílio Alves Morango, 671",b:"Jardim Brasil ZN"},
+    {id:"l115",n:"Lee Supermercado LTDA",e:"Av. Antenor Navarro, 599",b:"Jardim Brasil ZN"},
+    {id:"l116",n:"Damácio Pereira Parente",e:"Av. Roland Garros, 266",b:"Jardim Brasil"},
+    {id:"l117",n:"Zucai Huang Supermercado",e:"Av. Roland Garros, 2364",b:"Jardim Brasil ZN"},
+    {id:"l118",n:"Massa Pura Produtos Alimentícios",e:"Av. Gen. Ataliba Leonel, 2670",b:"Parada Inglesa"},
+    {id:"l119",n:"B&M Supermercado LTDA",e:"Av. General Ataliba Leonel, 3532",b:"Parada Inglesa"},
+    {id:"l120",n:"Panificadora Líder de Vila Ede",e:"Rua Paulo Avelar, 916",b:"Santana"},
+    {id:"l121",n:"Hong Zhang Mercado LTDA",e:"Rua Paulo de Avelar, 907",b:"Vila Dom Pedro II"},
+    {id:"l122",n:"Mercado Global EIRELI",e:"Rua Tanque Velho, 1074",b:"Vila Nivi"},
+    {id:"l123",n:"Mercadinho Kami Guarulhos",e:"Av. Emílio Ribas, 734",b:"Gopouva GRU"},
+    {id:"l124",n:"Panificadora Brasileira de Guarulhos",e:"R. Cônego Valadão, 216",b:"Gopouva GRU"},
+    {id:"l125",n:"Mercado Vizinhança GRU",e:"Rua Dr. José Maurício de Oliveira, 384",b:"Gopouva GRU"},
+    {id:"l126",n:"Simples Assim Conveniência",e:"Rodovia Fernão Dias, 201",b:"Vila São Rafael GRU"},
+    {id:"l127",n:"JTC Fast Food LTDA",e:"Av. Guarulhos, 4022",b:"Ponte Grande GRU"},
+  ]},
+  {num:10,sem:3,titulo:"GRU — Ponte Grande / Vila Galvão / Torres Tibagy / Vila Rosália",reg:"Guarulhos CEP 703xx–707xx",lojas:[
+    {id:"l128",n:"Center Guarulhos Paes e Doces",e:"Av. Guarulhos, 3842",b:"Ponte Grande GRU"},
+    {id:"l129",n:"GG Distribuidora de Alimentos",e:"Av. Guarulhos, 2979",b:"Ponte Grande GRU"},
+    {id:"l130",n:"Fani Mini Mercado LTDA",e:"Av. Guarulhos, 3943",b:"Ponte Grande GRU"},
+    {id:"l131",n:"Xin He",e:"Rua Cabo João Teruel Fregoni, 46",b:"Ponte Grande GRU"},
+    {id:"l132",n:"Antunes Distribuidora Produtos Alimentícios",e:"Rua Matutina, 32",b:"Jardim Munhoz GRU"},
+    {id:"l133",n:"Família II Supermercado",e:"Praça N. Sra. Aparecida, 275",b:"Jardim Vila Galvão GRU"},
+    {id:"l134",n:"Naturalle Comércio de Produtos Naturais",e:"Rua Vicente Melro, 1100",b:"Jardim Vila Galvão GRU"},
+    {id:"l135",n:"Picanha Nobre Casa de Carnes",e:"Rua Augusta, 162",b:"Vila Augusta GRU"},
+    {id:"l136",n:"Ferreira & Freitas Com de Alimentos",e:"Rua Vinte e Quatro de Outubro, 88",b:"Torres Tibagy GRU"},
+    {id:"l137",n:"Mercado Vereda Express",e:"Av. Francisco Conde, 577",b:"Vila Rosália GRU"},
+    {id:"l138",n:"Quitanda e Mercearia Vila Rosália",e:"Rua Dona Benedita, 204",b:"Vila Rosália GRU"},
+    {id:"l139",n:"Mercado Super Super Guaru",e:"R. Piauí, 74",b:"Vila Rosália GRU"},
+    {id:"l140",n:"Mercado Vitória Guarulhos",e:"R. Piauí, 74",b:"Vila Rosália GRU",obs:"⚠️ mesmo endereço"},
+    {id:"l141",n:"Supermercado Leonice",e:"Av. Saulle Pagnoncelli, 654",b:"Jd. Rosa de França GRU"},
+  ]},
+  {num:11,sem:4,titulo:"GRU — Rosa de França / Picançô / Baruch / Pq. Continental",reg:"Guarulhos CEP 708xx–709xx",lojas:[
+    {id:"l142",n:"Amizade Supermercado",e:"Av. Othon Luiz Silveira, 43",b:"Jd. Rosa de França GRU"},
+    {id:"l143",n:"Felix Meat Boutique das Carnes",e:"R. Antonio Pohlman, 116",b:"Jardim Terezópolis GRU"},
+    {id:"l144",n:"Trigo & Mel Conveniências",e:"Av. André Luiz, 488",b:"Picançô GRU"},
+    {id:"l145",n:"Lin Mercado LTDA",e:"Rua Geishofer, 29",b:"Jardim Baruch GRU"},
+    {id:"l146",n:"Johnny Massanori Siroma",e:"R. João Genuíno Sobral, 94",b:"Parque Continental II GRU"},
+    {id:"l147",n:"José Manoel Pinto Barroso",e:"R. João Genuíno Sobral, 54",b:"Parque Continental II GRU"},
+    {id:"l148",n:"Mercadinho J. Silva",e:"R. Paulo Freire, 320",b:"Parque Continental II GRU"},
+    {id:"l149",n:"Supermercado Tin Tim",e:"Rua Fabrício Ricardo M. de Oliveira, 19",b:"Pq. Continental III GRU"},
+    {id:"l150",n:"Solange de Andrade Freitas",e:"Rua Rio do Pires, 232",b:"Parque Continental GRU"},
+    {id:"l151",n:"Vila Zaira Hortifruti",e:"Av. Onze de Agosto, 256",b:"Jardim Zaira GRU"},
+    {id:"l152",n:"Panificadora e Conf. Nova Picançô",e:"Av. Dr. Timóteo Penteado, 2137",b:"Vila Hulda GRU"},
+    {id:"l153",n:"Mercado Super Star",e:"Rua Condessa Amália, 22",b:"Jardim Santa Mena GRU"},
+    {id:"l154",n:"Paes e Doces Paulo Faccini",e:"R. Siqueira Campos, 449",b:"Jardim São Paulo GRU"},
+    {id:"l155",n:"Mercadinho Vila Rio",e:"Av. Salgado Filho, 3660",b:"Vila Rio de Janeiro GRU"},
+  ]},
+  {num:12,sem:4,titulo:"GRU — Cocaia / Valéria / Jovaia / Bela Vista",reg:"Guarulhos CEP 711xx–713xx",lojas:[
+    {id:"l156",n:"Donizete Henrique Andrade GRU",e:"Rua Paquizeiro, 34",b:"Jardim Paraventi GRU"},
+    {id:"l157",n:"Mini Mercado Takamatsu",e:"R. Maria Zintl, 416",b:"Cocaia GRU"},
+    {id:"l158",n:"Poli Supermercado",e:"Rua Orestes Barbosa, 660",b:"Jardim Paraventi GRU"},
+    {id:"l159",n:"Mercado Pereira GRU",e:"Rua Carmópolis de Minas, 95",b:"Jardim Santa Clara GRU"},
+    {id:"l160",n:"Empório Dia a Dia GRU",e:"Av. Rouxinol, 51",b:"Jardim Valéria GRU"},
+    {id:"l161",n:"Ileni Toshie Yasuda Siroma",e:"Av. Rouxinol, 129",b:"Jardim Valéria GRU"},
+    {id:"l162",n:"Panificadora Galles",e:"Av. Brigadeiro Faria Lima, 462",b:"Cocaia GRU"},
+    {id:"l163",n:"Mini Mix Hortifruti",e:"Av. Brigadeiro Faria Lima, 1568 Box 01",b:"Cocaia GRU"},
+    {id:"l164",n:"Blessed Market",e:"Rua Miguel Leão, 230",b:"Jardim Cocaia GRU"},
+    {id:"l165",n:"Mini Mercado M&C",e:"R. Miguel Leão, 230",b:"Jardim Cocaia GRU",obs:"⚠️ mesmo endereço"},
+    {id:"l166",n:"Mini Mercado Testae",e:"Rua João Artoni, 89",b:"Jardim Testae GRU"},
+    {id:"l167",n:"Mercado Two L2",e:"Rua Sarutaia, 759",b:"Jardim São Paulo GRU"},
+    {id:"l168",n:"Mercado Irmãos P. Lima",e:"Rua Josefina Dalcin Caseiro, 05",b:"Jardim da Mamãe GRU"},
+    {id:"l169",n:"E. A. de Albuquerque Mini Mercado",e:"Rua Santa Cecília Pavão, 151",b:"Jardim Jovaia GRU"},
+  ]},
+  {num:13,sem:4,titulo:"GRU — Cidade Martins / Bela Vista / Divinolândia / Adriana",reg:"Guarulhos CEP 713xx",lojas:[
+    {id:"l170",n:"Mercadinho Jacumê",e:"Rua Dona Olga Martins, 31",b:"Cidade Martins GRU"},
+    {id:"l171",n:"Panificadora Bandeirantes",e:"R. Dona Olga Martins, 14",b:"Jardim Santa Maria GRU"},
+    {id:"l172",n:"Panificadora Jardim Divinolândia",e:"Rua Humberto Brochini, 173",b:"Jardim Divinolândia GRU"},
+    {id:"l173",n:"FF Supermercado",e:"Rua Humberto Brochini, 192",b:"Jardim Bela Vista GRU"},
+    {id:"l174",n:"Mercadinho Novidade de Guarulhos",e:"Rua Humberto Brochini, 149",b:"Jd. Bela Vista GRU"},
+    {id:"l175",n:"Mercadinho do Mauro",e:"R. Imbituba, 75",b:"Vila São João Batista GRU"},
+    {id:"l176",n:"Santos Supermercado",e:"R. Samuel Libório de Ávila, 292",b:"Jardim Adriana GRU"},
+    {id:"l177",n:"Padaria Sagres de Guarulhos",e:"Av. Mariana Ubaldina do Espírito Santo, 580",b:"Macedo GRU"},
+    {id:"l178",n:"Empório e Mercado Esperança",e:"Rua José Nilson Ferretti, 984",b:"Jardim Santa Lídia GRU"},
+    {id:"l179",n:"Mercado Expedita Isidoro",e:"R. Mimoso do Sul, 55",b:"Jardim Paraíso GRU"},
+    {id:"l180",n:"Guilherme de Oliveira Santos",e:"Av. Purus, 213",b:"Jardim Paraíso GRU"},
+    {id:"l181",n:"Com. de Prod. Alimentícios Brasmelo",e:"Av. Silvestre Pires de Freitas, 91",b:"Jardim Santa Inês GRU"},
+    {id:"l182",n:"Maria das Graças de Souza SA",e:"Rua Granito, 462",b:"Vila União GRU"},
+    {id:"l183",n:"Mini Mercado Super Mais",e:"Av. Aguanil, 17",b:"Cidade Serôdio GRU"},
+  ]},
+  {num:14,sem:5,titulo:"GRU — Fortaleza / Soberana / Dutra / Presidente Dutra",reg:"Guarulhos CEP 715xx–717xx",lojas:[
+    {id:"l184",n:"J Palhuca Padaria e Minimercado",e:"Rua Hilário Pires de Freitas, 34",b:"Jardim Fortaleza GRU"},
+    {id:"l185",n:"OP Distribuidora de Alimentos",e:"Rua Rio Negro, 708",b:"Cidade Soberana GRU"},
+    {id:"l186",n:"Mega Mix do Precinho",e:"Praça Estrela, 34",b:"Cidade Soberana GRU"},
+    {id:"l187",n:"Mercado Nova Geração Guarulhos",e:"Av. Rio Real, 75",b:"Jardim Dutra GRU"},
+    {id:"l188",n:"J J Viana Comércio e Distribuidora GRU",e:"R. Itirucu, 325",b:"Jardim Presidente Dutra GRU"},
+    {id:"l189",n:"JC Paulista Minimercado GRU",e:"Rua Itirucu, 560",b:"Jardim Presidente Dutra GRU"},
+    {id:"l190",n:"Mini Padaria e Mercado Tudo de Bom",e:"Rua Itirucu, 567",b:"Jardim Presidente Dutra GRU"},
+    {id:"l191",n:"Sena e Santos Mercadinho",e:"Rua Macarani, 305",b:"Jardim Presidente Dutra GRU"},
+    {id:"l192",n:"Mercado Marakas GRU",e:"Rua Maracas, 480",b:"Jardim Presidente Dutra GRU"},
+    {id:"l193",n:"Fabiano José da Silva Mercearia",e:"Av. Armando Bei, 1821",b:"Vila Nova Bonsucesso GRU"},
+    {id:"l194",n:"Mercadinho Vila Nova Bonsucesso",e:"Av. Armando Bei, 1341",b:"Vila Nova Bonsucesso GRU"},
+    {id:"l195",n:"Mercadinho Sublime Martins",e:"Av. Carmela Thomeu, 674",b:"Vila Carmela I GRU"},
+    {id:"l196",n:"GF Alimentos",e:"R. Rodrigo Fernandes, Lote 21",b:"Jardim Santa Paula GRU"},
+    {id:"l197",n:"Mercado Central da Ponte Alta",e:"Av. José Rangel Filho, 979",b:"Ponte Alta GRU"},
+  ]},
+  {num:15,sem:5,titulo:"GRU — Cumbica / Santa Helena / Parque Brasília / Parque das Nações",reg:"Guarulhos CEP 718xx–727xx",lojas:[
+    {id:"l198",n:"Mercadinho Sublime Cumbica",e:"Av. Cap. Aviador Walter Ribeiro, 84",b:"Cidade Jardim Cumbica GRU"},
+    {id:"l199",n:"JTBE Comércio de Alimentos GRU",e:"Rua Sgt. Aeronáutica Benedito Fumeni, 472",b:"Jardim Cumbica GRU"},
+    {id:"l200",n:"Cumbica Comércio de Alimentos",e:"Rua Sgt. Aeronáutica Benedito Fumeni, 472",b:"Cid. Jardim Cumbica GRU",obs:"⚠️ mesmo endereço"},
+    {id:"l201",n:"Supermercado Alpha",e:"Rua Paraíba, 181",b:"Conjunto Paes de Barros GRU"},
+    {id:"l202",n:"Comercial de Doces Santa Iria",e:"Estrada Velha Guarulhos São Miguel, 1071",b:"Jardim Santa Helena GRU"},
+    {id:"l203",n:"Trostolf Comércio Atacadista",e:"Rua Vital Brasil, 298",b:"Vila Nova Cumbica GRU"},
+    {id:"l204",n:"Supermercado Copa Mais",e:"Rua Ipiobuna, 120",b:"Jardim Cumbica GRU"},
+    {id:"l205",n:"Supermercado Brasilianos",e:"Rua Montes Claros, 28",b:"Cidade Parque Brasília GRU"},
+    {id:"l206",n:"Mercadinho Bonsucesso",e:"Rua Januário, 20",b:"Jardim Albertina GRU"},
+    {id:"l207",n:"Mercadinho Ilha Bela GRU",e:"Rua Ilha Bela, 619",b:"Parque das Nações GRU"},
+    {id:"l208",n:"Mercadinho Sítio Novo",e:"Av. Norte e Sul, 310",b:"Conjunto Marcos Freire GRU"},
+    {id:"l209",n:"GD Distribuidora e Comércio de Alimentos",e:"Av. Academia de São Paulo, 244",b:"Jardim Camargo Novo"},
+    {id:"l210",n:"Yago Hortifruti (SJC 1)",e:"Av. Dr. Adhemar de Barros, 563",b:"Jardim São Dimas SJC"},
+    {id:"l211",n:"Yago Hortifruti (SJC 2)",e:"Av. Cassiano Ricardo, 401",b:"Parque Residencial Aquarius SJC"},
+  ]},
+];
+
+// IDs únicos por quinzena para salvar visitados separado
+function vid(id, q) { return id + '_q' + q; }
+
+let vis = JSON.parse(localStorage.getItem('rmj_vis') || '{}');
+let obs = JSON.parse(localStorage.getItem('rmj_obs') || '{}');
+let activeQ = 0;
+
+function render() {
+  [0,1].forEach(qi => {
+    const cont = document.getElementById('dias-q' + (qi+1));
+    let semAtual = -1, html = '';
+    DIAS.forEach(dia => {
+      if (dia.sem !== semAtual) {
+        semAtual = dia.sem;
+        html += `<div class="semana-sep">— Semana ${dia.sem + (qi * 5)} —</div>`;
+      }
+      const vCount = dia.lojas.filter(l => vis[vid(l.id, qi)]).length;
+      const pct = Math.round(vCount / dia.lojas.length * 100);
+      const allDone = vCount === dia.lojas.length;
+      html += `
+      <div class="dia-card open ${qi===0?'q1c':'q2c'}" id="dc${qi}-${dia.num}">
+        <div class="dia-head" onclick="toggleDia(${qi},${dia.num})">
+          <div class="dia-num">D${dia.num}</div>
+          <div class="dia-info">
+            <div class="dia-title">${dia.titulo}</div>
+            <div class="dia-region">${dia.reg}</div>
+          </div>
+          <div class="dia-right">
+            <span class="dia-badge">${dia.lojas.length} lojas</span>
+            <span class="dia-done ${allDone?'show':''}">✓ Feito</span>
+            <span class="dia-chev">▼</span>
+          </div>
+        </div>
+        <div class="dia-prog"><div class="dia-prog-fill" id="dpf${qi}-${dia.num}" style="width:${pct}%"></div></div>
+        <div class="lojas-wrap" id="lw${qi}-${dia.num}">
+          ${dia.lojas.map(l => renderLoja(l, qi)).join('')}
+        </div>
+      </div>`;
+    });
+    cont.innerHTML = html;
+  });
+  atualizarTotais();
+}
+
+function renderLoja(l, qi) {
+  const done = !!vis[vid(l.id, qi)];
+  const obsTxt = obs[vid(l.id, qi)] || l.obs || '';
+  const enc = encodeURIComponent((l.e||'') + ' ' + (l.b||'') + ' Brasil');
+  return `
+  <div class="loja-item ${done?'done':''}" id="li${qi}-${l.id}">
+    <div class="loja-check" onclick="toggle('${l.id}',${qi})">${done?'✓':''}</div>
+    <div class="loja-body">
+      <div class="loja-nome">${l.n}</div>
+      <div class="loja-end">📌 ${l.e}</div>
+      <div class="loja-bairro">${l.b}</div>
+      ${obsTxt?`<span class="loja-obs-tag">📝 ${obsTxt}</span>`:''}
+    </div>
+    <div class="loja-actions">
+      <span class="loja-status ${done?'sv':'sp'}">${done?'Visitado':'Pendente'}</span>
+      <div class="nav-row">
+        <a class="btn-nav bw" href="https://waze.com/ul?q=${enc}" target="_blank">🚗 Waze</a>
+        <a class="btn-nav bg" href="https://www.google.com/maps/search/?api=1&query=${enc}" target="_blank">📍 Maps</a>
+      </div>
+      <button class="btn-obs-sm" onclick="editObs('${l.id}',${qi})">+ obs</button>
+    </div>
+  </div>`;
+}
+
+function atualizarTotais() {
+  let total=0, v0=0, v1=0;
+  DIAS.forEach(dia => dia.lojas.forEach(l => {
+    total++;
+    if (vis[vid(l.id,0)]) v0++;
+    if (vis[vid(l.id,1)]) v1++;
+  }));
+  document.getElementById('total-vis').textContent = v0 + v1;
+  document.getElementById('vis-q1').textContent = v0 + '/' + total;
+  document.getElementById('vis-q2').textContent = v1 + '/' + total;
+  const p0 = total ? Math.round(v0/total*100) : 0;
+  const p1 = total ? Math.round(v1/total*100) : 0;
+  document.getElementById('bar-q1').style.width = p0 + '%';
+  document.getElementById('bar-q2').style.width = p1 + '%';
+  document.getElementById('pct-q1').textContent = p0 + '% concluído';
+  document.getElementById('pct-q2').textContent = p1 + '% concluído';
+  DIAS.forEach(dia => [0,1].forEach(qi => {
+    const vc = dia.lojas.filter(l => vis[vid(l.id,qi)]).length;
+    const pct = Math.round(vc/dia.lojas.length*100);
+    const bar = document.getElementById('dpf'+qi+'-'+dia.num);
+    if (bar) bar.style.width = pct + '%';
+    const badge = document.querySelector('#dc'+qi+'-'+dia.num+' .dia-done');
+    if (badge) badge.classList.toggle('show', vc===dia.lojas.length);
+  }));
+}
+
+function toggle(id, qi) {
+  const key = vid(id, qi);
+  vis[key] = !vis[key];
+  localStorage.setItem('rmj_vis', JSON.stringify(vis));
+  const dia = DIAS.find(d => d.lojas.some(l => l.id===id));
+  const loja = dia?.lojas.find(l => l.id===id);
+  if (loja) { const el = document.getElementById('li'+qi+'-'+id); if (el) el.outerHTML = renderLoja(loja, qi); }
+  atualizarTotais();
+  showToast(vis[key] ? '✅ Visitado' : '↩️ Desmarcado');
+}
+
+function toggleDia(qi, num) { document.getElementById('dc'+qi+'-'+num)?.classList.toggle('open'); }
+
+function trocarQ(qi) {
+  activeQ = qi;
+  document.querySelectorAll('.q-panel').forEach((p,i) => p.classList.toggle('active', i===qi));
+  document.getElementById('tab-q1').className = 'tab-btn' + (qi===0?' q1a':'');
+  document.getElementById('tab-q2').className = 'tab-btn' + (qi===1?' q2a':'');
+}
+
+function buscar(q) {
+  const t = q.toLowerCase().trim();
+  document.querySelectorAll('.loja-item').forEach(el => el.style.display = !t||el.innerText.toLowerCase().includes(t)?'flex':'none');
+  document.querySelectorAll('.dia-card').forEach(dc => {
+    const v = [...dc.querySelectorAll('.loja-item')].some(el => el.style.display!=='none');
+    dc.style.display = t ? (v?'block':'none') : '';
+    if (t && v) dc.classList.add('open');
+  });
+  document.querySelectorAll('.q-panel').forEach((p,i) => p.classList.toggle('active', t ? true : i===activeQ));
+}
+
+function editObs(id, qi) {
+  const key = vid(id, qi);
+  const nova = prompt('Observação:', obs[key]||'');
+  if (nova===null) return;
+  obs[key] = nova;
+  localStorage.setItem('rmj_obs', JSON.stringify(obs));
+  const dia = DIAS.find(d => d.lojas.some(l => l.id===id));
+  const loja = dia?.lojas.find(l => l.id===id);
+  if (loja) { const el = document.getElementById('li'+qi+'-'+id); if (el) el.outerHTML = renderLoja(loja, qi); }
+  showToast('📝 Salvo');
+}
+
+function abrirModal() { document.getElementById('overlay').classList.add('open'); }
+function fecharModal(e) { if (!e||e.target===document.getElementById('overlay')) document.getElementById('overlay').classList.remove('open'); }
+function salvar() {
+  const nome = document.getElementById('a-nome').value.trim();
+  const end = document.getElementById('a-end').value.trim();
+  if (!nome||!end) { showToast('⚠️ Nome e endereço obrigatórios'); return; }
+  DIAS[DIAS.length-1].lojas.push({id:'cx'+Date.now(),n:nome,e:end,b:document.getElementById('a-bairro').value.trim(),obs:document.getElementById('a-obs').value.trim()});
+  render(); fecharModal(); showToast('✅ Cliente adicionado!');
+  ['a-nome','a-end','a-bairro','a-obs'].forEach(id=>document.getElementById(id).value='');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+render();
+</script>
+</body>
+</html>
